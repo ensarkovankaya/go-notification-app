@@ -1,0 +1,10 @@
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=notification
+POSTGRES_USER=postgres
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_TIMEZONE=Europe/Istanbul
+POSTGRES_GORM_SSL_MODE=disable
+
+DB_URI=postgresql://postgres:postgres@postgres:5432/notification?sslmode=disable
+REDIS_URI=redis://redis:6379
