@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/ensarkovankaya/go-notification-app/clients"
 	"github.com/ensarkovankaya/go-notification-app/handlers"
 	"github.com/ensarkovankaya/go-notification-app/services"
 	"github.com/gofiber/fiber/v2"
@@ -19,6 +20,8 @@ func main() {
 			_ = zap.L().Sync()
 		}
 	}()
+	defer closeDB()
+	defer closeRedis()
 	defer func() { _ = zap.L().Sync() }()
 
 	// Initialize HTTP Server
@@ -27,6 +30,9 @@ func main() {
 		ReadTimeout:  Cnf.ReadTimeout,
 		WriteTimeout: Cnf.WriteTimeout,
 	})
+
+	// Clients
+	_ = clients.NewWebhookClient(Cnf.WebhookID)
 
 	// Services
 	messageService := &services.MessageService{DB: DB}

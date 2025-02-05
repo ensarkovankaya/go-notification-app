@@ -1,0 +1,60 @@
+swagger: "2.0"
+info:
+  title: Webhook API
+  description: Mock api for simulating a sms client
+  version: 1.0.0
+host: "webhook.site"
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+  /{id}/:
+    post:
+      summary: Send a message
+      operationId: sendMessage
+      tags:
+        - messages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: request
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/MessageRequest"
+      responses:
+        200:
+          $ref: "#/responses/MessageResponse"
+
+responses:
+  MessageResponse:
+    description: Message received
+    schema:
+      $ref: "#/definitions/MessageResult"
+
+definitions:
+  MessageRequest:
+    type: object
+    properties:
+      to:
+        type: string
+        example: "+9055511111111"
+      content:
+        type: string
+        example: "Hello, World!"
+  MessageResult:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Accepted"
+      messageId:
+        type: string
+        example: "67f2f8a8-ea58-4ed0-a6f9-ff217df4d849"

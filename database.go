@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/ensarkovankaya/go-notification-app/repositories"
+	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -20,5 +21,15 @@ func init() {
 	}
 	if err = DB.AutoMigrate(&repositories.Message{}); err != nil {
 		panic(fmt.Errorf("failed to migrate database: %w", err))
+	}
+}
+
+func closeDB() {
+	sql, err := DB.DB()
+	if err != nil {
+		zap.L().Error("failed to get database connection", zap.Error(err))
+	}
+	if err = sql.Close(); err != nil {
+		zap.L().Error("failed to close database connection", zap.Error(err))
 	}
 }

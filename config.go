@@ -16,6 +16,8 @@ type Config struct {
 	IdleTimeout  time.Duration `env:"IDLE_TIMEOUT,default=60s"`
 	// Database Configurations
 	DatabaseURI string `env:"DB_URI"`
+	WebhookID   string `env:"WEBHOOK_ID"`
+	RedisURI    string `env:"REDIS_URI"`
 }
 
 func init() {
