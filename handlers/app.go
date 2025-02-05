@@ -21,7 +21,7 @@ func (h *AppHandler) Ready(c *fiber.Ctx) error {
 	if err := h.validateDatabaseConnection(c.UserContext()); err != nil {
 		return err
 	}
-	return c.Status(fiber.StatusOK).Send([]byte("OK"))
+	return c.Status(fiber.StatusOK).JSON(map[string]string{"status": "OK"})
 }
 
 // Health is a handler function that returns OK if the application is healthy
@@ -29,7 +29,7 @@ func (h *AppHandler) Health(c *fiber.Ctx) error {
 	if err := h.validateDatabaseConnection(c.UserContext()); err != nil {
 		return err
 	}
-	return c.Status(fiber.StatusOK).Send([]byte("OK"))
+	return c.Status(fiber.StatusOK).JSON(map[string]string{"status": "OK"})
 }
 
 // validateDatabaseConnection is a helper function that check the database connection is valid

@@ -24,6 +24,42 @@ securityDefinitions:
     name: Authorization
 
 paths:
+  /healthz:
+    get:
+      summary: Health check endpoint
+      description: Check if service is healthy, kubelet uses this endpoint to check if service is healthy
+      operationId: healthCheck
+      tags:
+        - probes
+      responses:
+        200:
+          description: Service is healthy
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "ok"
+        500:
+          $ref: "#/responses/InternalServerError"
+  /readyz:
+    get:
+      summary: Readiness check endpoint
+      description: Check if service is ready to accept requests, kubelet uses this endpoint to check if service is ready
+      operationId: readinessCheck
+      tags:
+        - probes
+      responses:
+        200:
+          description: Service is ready
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "ok"
+        500:
+          $ref: "#/responses/InternalServerError"
   /messages:
     get:
       summary: Get all messages
