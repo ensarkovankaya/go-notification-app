@@ -2,8 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/ensarkovankaya/go-message-broker/common"
-	"github.com/ensarkovankaya/go-message-broker/handlers"
+	"github.com/ensarkovankaya/go-notification-app/handlers"
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 	"os"
@@ -21,11 +20,11 @@ func main() {
 	}()
 	defer func() { _ = zap.L().Sync() }()
 
-	// Initialize Fiber
+	// Initialize HTTP Server
 	app := fiber.New(fiber.Config{
-		IdleTimeout:  common.Cnf.IdleTimeout,
-		ReadTimeout:  common.Cnf.ReadTimeout,
-		WriteTimeout: common.Cnf.WriteTimeout,
+		IdleTimeout:  Cnf.IdleTimeout,
+		ReadTimeout:  Cnf.ReadTimeout,
+		WriteTimeout: Cnf.WriteTimeout,
 	})
 
 	// Handlers
@@ -35,7 +34,7 @@ func main() {
 
 	// Run http server
 	go func() {
-		address := fmt.Sprintf(":%s", common.Cnf.Port)
+		address := fmt.Sprintf(":%s", Cnf.Port)
 		zap.L().Info(fmt.Sprintf("Application listening at %v", address))
 		if err := app.Listen(address); err != nil {
 			zap.L().Error("Application could not started", zap.Error(err))

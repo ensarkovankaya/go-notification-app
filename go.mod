@@ -1,4 +1,4 @@
-module github.com/ensarkovankaya/go-message-broker
+module github.com/ensarkovankaya/go-notification-app
 
 go 1.23
 

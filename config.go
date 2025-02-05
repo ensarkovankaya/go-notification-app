@@ -1,4 +1,4 @@
-package common
+package main
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ var Cnf Config
 
 type Config struct {
 	// Http Server Configurations
-	Port         string        `env:"PORT,default=8000"`
+	Port         string        `env:"PORT,default=9098"`
 	WriteTimeout time.Duration `env:"WRITE_TIMEOUT,default=60s"`
 	ReadTimeout  time.Duration `env:"READ_TIMEOUT,default=60s"`
 	IdleTimeout  time.Duration `env:"IDLE_TIMEOUT,default=60s"`
