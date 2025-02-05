@@ -18,7 +18,7 @@ func (h *AppHandler) Setup(router fiber.Router) {
 
 // Ready is a handler function that returns OK if the application is ready
 func (h *AppHandler) Ready(c *fiber.Ctx) error {
-	if err := h.validateDatabase(c.UserContext()); err != nil {
+	if err := h.validateDatabaseConnection(c.UserContext()); err != nil {
 		return err
 	}
 	return c.Status(fiber.StatusOK).Send([]byte("OK"))
@@ -26,13 +26,14 @@ func (h *AppHandler) Ready(c *fiber.Ctx) error {
 
 // Health is a handler function that returns OK if the application is healthy
 func (h *AppHandler) Health(c *fiber.Ctx) error {
-	if err := h.validateDatabase(c.UserContext()); err != nil {
+	if err := h.validateDatabaseConnection(c.UserContext()); err != nil {
 		return err
 	}
 	return c.Status(fiber.StatusOK).Send([]byte("OK"))
 }
 
-func (h *AppHandler) validateDatabase(ctx context.Context) error {
+// validateDatabaseConnection is a helper function that check the database connection is valid
+func (h *AppHandler) validateDatabaseConnection(ctx context.Context) error {
 	db, err := h.DB.DB()
 	if err != nil {
 		return fmt.Errorf("failed to get database connection: %w", err)
