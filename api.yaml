@@ -199,7 +199,7 @@ definitions:
       recipient:
         type: string
         maxLength: 255
-        minLength: 15
+        minLength: 13
       content:
         type: string
         maxLength: 2048

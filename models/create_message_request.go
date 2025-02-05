@@ -28,7 +28,7 @@ type CreateMessageRequest struct {
 	// recipient
 	// Required: true
 	// Max Length: 255
-	// Min Length: 15
+	// Min Length: 13
 	Recipient *string `json:"recipient"`
 }
 
@@ -73,7 +73,7 @@ func (m *CreateMessageRequest) validateRecipient(formats strfmt.Registry) error 
 		return err
 	}
 
-	if err := validate.MinLength("recipient", "body", *m.Recipient, 15); err != nil {
+	if err := validate.MinLength("recipient", "body", *m.Recipient, 13); err != nil {
 		return err
 	}
 
