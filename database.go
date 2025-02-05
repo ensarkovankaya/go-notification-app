@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/ensarkovankaya/go-messagingapp/common"
+	"github.com/ensarkovankaya/go-messagingapp/repositories"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -17,5 +18,8 @@ func init() {
 	})
 	if err != nil {
 		panic(fmt.Errorf("failed to connect database: %w", err))
+	}
+	if err = DB.AutoMigrate(&repositories.Message{}); err != nil {
+		panic(fmt.Errorf("failed to migrate database: %w", err))
 	}
 }
