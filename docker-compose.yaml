@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
       args:
         BUILDPLATFORM: ${BUILDPLATFORM}
-        TARGETARCH: ${TARGETPLATFORM}
+        TARGETARCH: ${TARGETARCH}
     restart: always
     ports:
       - "9098:9098"
