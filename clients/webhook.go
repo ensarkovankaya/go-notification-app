@@ -32,7 +32,7 @@ func (c *WebhookClient) Send(ctx context.Context, payload Payload) (string, erro
 		Request: &payload,
 		Context: ctx,
 	}
-	resp, err := c.API.Messages.SendMessage(params, nil)
+	resp, err := c.API.Messages.SendMessage(params)
 	if err != nil {
 		zap.L().Error("Failed to send message", zap.Error(err))
 		return "", err

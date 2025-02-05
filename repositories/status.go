@@ -6,7 +6,7 @@ type MessageStatus string
 
 var (
 	StatusScheduled MessageStatus = "SCHEDULED"
-	StatusSent      MessageStatus = "SENT"
+	StatusSuccess   MessageStatus = "SUCCESS"
 	StatusFailed    MessageStatus = "FAILED"
 )
 

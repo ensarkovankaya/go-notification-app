@@ -39,12 +39,10 @@ func (s *MessageService) List(ctx context.Context, limit, offset int64, order st
 		db = query(db)
 	}
 	if err := db.Model(&repositories.Message{}).Count(&total).Error; err != nil {
-		zap.L().Error("Failed to count messages", zap.Error(err))
 		return nil, fmt.Errorf("failed to count messages: %w", err)
 	}
 
 	if err := db.Limit(int(limit)).Offset(int(offset)).Order(order).Find(&messages).Error; err != nil {
-		zap.L().Error("Failed to fetch messages", zap.Error(err))
 		return nil, fmt.Errorf("failed to fetch messages: %w", err)
 	}
 
@@ -59,7 +57,7 @@ func (s *MessageService) List(ctx context.Context, limit, offset int64, order st
 func (s *MessageService) MarkAsSend(ctx context.Context, id uint, messageID string) error {
 	zap.L().Info("Marking message as sent", zap.Uint("id", id), zap.String("message_id", messageID))
 	if err := s.DB.WithContext(ctx).Model(&repositories.Message{}).Where("id = ?", id).UpdateColumns(map[string]any{
-		"status":     repositories.StatusSent,
+		"status":     repositories.StatusSuccess,
 		"message_id": messageID,
 		"send_time":  s.DB.NowFunc(),
 		"updated_at": s.DB.NowFunc(),

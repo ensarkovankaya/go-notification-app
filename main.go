@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/ensarkovankaya/go-notification-app/clients"
 	"github.com/ensarkovankaya/go-notification-app/handlers"
@@ -32,14 +33,24 @@ func main() {
 	})
 
 	// Clients
-	_ = clients.NewWebhookClient(Cnf.WebhookID)
+	webhookClient := clients.NewWebhookClient(Cnf.WebhookID)
 
 	// Services
 	messageService := &services.MessageService{DB: DB}
+	publisherService := &services.PublisherService{
+		MessageService: messageService,
+		Duration:       Cnf.CronTTL,
+		Redis:          Redis,
+	}
+	subscriberService := &services.SubscriberService{
+		MessageService: messageService,
+		Redis:          Redis,
+		WebhookClient:  webhookClient,
+	}
 
 	// Handlers
 	rootRouter := app.Group("/api")
-	appHandler := handlers.AppHandler{DB: DB}
+	appHandler := handlers.AppHandler{DB: DB, Redis: Redis}
 	appHandler.Setup(rootRouter)
 
 	messageHandler := handlers.MessageHandler{MessageService: messageService}
@@ -54,10 +65,19 @@ func main() {
 		}
 	}()
 
+	ctx := context.Background()
+
+	// Start Cron Job
+	go func() { publisherService.Start(ctx) }()
+
+	// Start Subscriber
+	go func() { subscriberService.Start(ctx) }()
+
 	// Graceful shutdown
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	<-c
+	ctx.Done() // Stop publisher and subscriber
 
 	// Close http application
 	if err := app.Shutdown(); err != nil {
