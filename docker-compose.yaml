@@ -1,0 +1,27 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILDPLATFORM: "linux/arm64"
+        TARGETARCH: "linux/arm64"
+    container_name: notification
+    ports:
+      - "9098:9098"
+    env_file:
+      - .env
+
+  postgres:
+    image: postgres:12.5
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+
+  redis:
+    image: redis:7.4.2
+    container_name: redis
+    ports:
+      - "6379:6379"

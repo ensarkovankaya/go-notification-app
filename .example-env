@@ -8,3 +8,6 @@ POSTGRES_GORM_SSL_MODE=disable
 
 DB_URI=postgresql://postgres:postgres@postgres:5432/notification?sslmode=disable
 REDIS_URI=redis://redis:6379
+
+BUILDPLATFORM=linux/arm64
+TARGETARCH=linux/arm64

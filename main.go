@@ -32,7 +32,7 @@ func main() {
 	appHandler := handlers.AppHandler{DB: DB}
 	appHandler.Setup(rootRouter)
 
-	// Run http server
+	// Start http server
 	go func() {
 		address := fmt.Sprintf(":%s", Cnf.Port)
 		zap.L().Info(fmt.Sprintf("Application listening at %v", address))
