@@ -8,8 +8,10 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // CreateMessageRequest create message request
@@ -18,14 +20,67 @@ import (
 type CreateMessageRequest struct {
 
 	// content
-	Content string `json:"content,omitempty"`
+	// Required: true
+	// Max Length: 2048
+	// Min Length: 1
+	Content *string `json:"content"`
 
 	// recipient
-	Recipient string `json:"recipient,omitempty"`
+	// Required: true
+	// Max Length: 255
+	// Min Length: 15
+	Recipient *string `json:"recipient"`
 }
 
 // Validate validates this create message request
 func (m *CreateMessageRequest) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateContent(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRecipient(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *CreateMessageRequest) validateContent(formats strfmt.Registry) error {
+
+	if err := validate.Required("content", "body", m.Content); err != nil {
+		return err
+	}
+
+	if err := validate.MinLength("content", "body", *m.Content, 1); err != nil {
+		return err
+	}
+
+	if err := validate.MaxLength("content", "body", *m.Content, 2048); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *CreateMessageRequest) validateRecipient(formats strfmt.Registry) error {
+
+	if err := validate.Required("recipient", "body", m.Recipient); err != nil {
+		return err
+	}
+
+	if err := validate.MinLength("recipient", "body", *m.Recipient, 15); err != nil {
+		return err
+	}
+
+	if err := validate.MaxLength("recipient", "body", *m.Recipient, 255); err != nil {
+		return err
+	}
+
 	return nil
 }
 
