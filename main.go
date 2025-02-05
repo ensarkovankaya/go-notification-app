@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/ensarkovankaya/go-notification-app/handlers"
+	"github.com/ensarkovankaya/go-notification-app/services"
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 	"os"
@@ -27,10 +28,16 @@ func main() {
 		WriteTimeout: Cnf.WriteTimeout,
 	})
 
+	// Services
+	messageService := &services.MessageService{DB: DB}
+
 	// Handlers
 	rootRouter := app.Group("/api")
 	appHandler := handlers.AppHandler{DB: DB}
 	appHandler.Setup(rootRouter)
+
+	messageHandler := handlers.MessageHandler{MessageService: messageService}
+	messageHandler.Setup(rootRouter)
 
 	// Start http server
 	go func() {
