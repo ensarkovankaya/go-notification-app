@@ -17,8 +17,8 @@ import (
 // swagger:model CreateMessageRequest
 type CreateMessageRequest struct {
 
-	// message
-	Message string `json:"message,omitempty"`
+	// content
+	Content string `json:"content,omitempty"`
 
 	// recipient
 	Recipient string `json:"recipient,omitempty"`

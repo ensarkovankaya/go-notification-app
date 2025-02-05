@@ -163,7 +163,7 @@ definitions:
     properties:
       recipient:
         type: string
-      message:
+      content:
         type: string
   Message:
     type: object
@@ -173,7 +173,7 @@ definitions:
         format: int64
       recipient:
         type: string
-      message:
+      content:
         type: string
       sentTime:
         type: string
@@ -184,6 +184,8 @@ definitions:
           - SCHEDULED
           - SENT
           - FAILED
+      messageID:
+        type: string
       createdAt:
         type: string
         format: date-time

@@ -20,15 +20,15 @@ import (
 // swagger:model Message
 type Message struct {
 
+	// content
+	Content string `json:"content,omitempty"`
+
 	// created at
 	// Format: date-time
 	CreatedAt strfmt.DateTime `json:"createdAt,omitempty"`
 
 	// id
 	ID int64 `json:"id,omitempty"`
-
-	// message
-	Message string `json:"message,omitempty"`
 
 	// recipient
 	Recipient string `json:"recipient,omitempty"`
