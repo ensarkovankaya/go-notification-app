@@ -1,4 +1,4 @@
-package pkg
+package common
 
 import (
 	"fmt"
@@ -14,6 +14,8 @@ type Config struct {
 	WriteTimeout time.Duration `env:"WRITE_TIMEOUT,default=60s"`
 	ReadTimeout  time.Duration `env:"READ_TIMEOUT,default=60s"`
 	IdleTimeout  time.Duration `env:"IDLE_TIMEOUT,default=60s"`
+	// Database Configurations
+	DatabaseURI string `env:"DB_URI"`
 }
 
 func init() {

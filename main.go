@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/ensarkovankaya/go-messagingapp/pkg"
+	"github.com/ensarkovankaya/go-messagingapp/common"
+	"github.com/ensarkovankaya/go-messagingapp/handlers"
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 	"os"
@@ -11,20 +12,33 @@ import (
 )
 
 func main() {
-	defer func() { _ = pkg.Logger.Sync() }()
+	// Handle application panic
+	defer func() {
+		if err := recover(); err != nil {
+			zap.L().Error("Application panicked", zap.Any("error", err))
+			_ = zap.L().Sync()
+		}
+	}()
+	defer func() { _ = zap.L().Sync() }()
+
 	// Initialize Fiber
 	app := fiber.New(fiber.Config{
-		IdleTimeout:  pkg.Cnf.IdleTimeout,
-		ReadTimeout:  pkg.Cnf.ReadTimeout,
-		WriteTimeout: pkg.Cnf.WriteTimeout,
+		IdleTimeout:  common.Cnf.IdleTimeout,
+		ReadTimeout:  common.Cnf.ReadTimeout,
+		WriteTimeout: common.Cnf.WriteTimeout,
 	})
+
+	// Handlers
+	rootRouter := app.Group("/api")
+	appHandler := handlers.AppHandler{DB: DB}
+	appHandler.Setup(rootRouter)
 
 	// Run http server
 	go func() {
-		address := fmt.Sprintf(":%s", pkg.Cnf.Port)
-		pkg.Logger.Info(fmt.Sprintf("Application listening at %v", address))
+		address := fmt.Sprintf(":%s", common.Cnf.Port)
+		zap.L().Info(fmt.Sprintf("Application listening at %v", address))
 		if err := app.Listen(address); err != nil {
-			pkg.Logger.Error("Application could not started", zap.Error(err))
+			zap.L().Error("Application could not started", zap.Error(err))
 		}
 	}()
 
@@ -33,10 +47,10 @@ func main() {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	<-c
 
-	// Close application
+	// Close http application
 	if err := app.Shutdown(); err != nil {
-		pkg.Logger.Error("Server shutdown failed", zap.Error(err))
+		zap.L().Error("Server shutdown failed", zap.Error(err))
 	} else {
-		pkg.Logger.Info("Server shutdown succeeded")
+		zap.L().Info("Server shutdown succeeded")
 	}
 }
