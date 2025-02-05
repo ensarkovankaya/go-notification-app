@@ -31,14 +31,14 @@ type Message struct {
 	ID int64 `json:"id,omitempty"`
 
 	// message ID
-	MessageID string `json:"messageID,omitempty"`
+	MessageID *string `json:"messageID"`
 
 	// recipient
 	Recipient string `json:"recipient,omitempty"`
 
 	// sent time
 	// Format: date-time
-	SentTime strfmt.DateTime `json:"sentTime,omitempty"`
+	SentTime *strfmt.DateTime `json:"sentTime"`
 
 	// status
 	// Enum: [SCHEDULED SENT FAILED]

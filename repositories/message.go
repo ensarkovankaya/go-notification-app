@@ -13,3 +13,10 @@ type Message struct {
 	MessageID sql.NullString
 	SendTime  sql.NullTime
 }
+
+type MessageList struct {
+	Limit  int64
+	Offset int64
+	Total  int64
+	Data   []*Message
+}

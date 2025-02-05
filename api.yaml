@@ -38,7 +38,7 @@ paths:
         - $ref: "#/parameters/recipient"
       responses:
         200:
-          $ref: "#/responses/Message"
+          $ref: "#/responses/MessageList"
         400:
           $ref: "#/responses/BadRequest"
         401:
@@ -83,7 +83,7 @@ parameters:
     required: false
     default: 0
   order:
-    name: order_by
+    name: order
     in: query
     type: string
     required: false
@@ -122,14 +122,8 @@ responses:
   MessageList:
     description: List of messages
     schema:
-      allOf:
-        - $ref: "#/definitions/PaginatedResponse"
-        - type: object
-          properties:
-            data:
-              type: array
-              items:
-                $ref: "#/definitions/Message"
+      $ref: "#/definitions/MessageList"
+
 
 definitions:
   PaginatedResponse:
@@ -187,6 +181,8 @@ definitions:
       sentTime:
         type: string
         format: date-time
+        x-nullable: true
+        x-omitempty: false
       status:
         type: string
         enum:
@@ -195,9 +191,20 @@ definitions:
           - FAILED
       messageID:
         type: string
+        x-nullable: true
+        x-omitempty: false
       createdAt:
         type: string
         format: date-time
       updatedAt:
         type: string
         format: date-time
+  MessageList:
+    allOf:
+      - $ref: "#/definitions/PaginatedResponse"
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/Message"
