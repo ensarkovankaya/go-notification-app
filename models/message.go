@@ -30,6 +30,9 @@ type Message struct {
 	// id
 	ID int64 `json:"id,omitempty"`
 
+	// message ID
+	MessageID string `json:"messageID,omitempty"`
+
 	// recipient
 	Recipient string `json:"recipient,omitempty"`
 

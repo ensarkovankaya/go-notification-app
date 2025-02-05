@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/ensarkovankaya/go-messagingapp/common"
-	"github.com/ensarkovankaya/go-messagingapp/repositories"
+	"github.com/ensarkovankaya/go-message-broker/common"
+	"github.com/ensarkovankaya/go-message-broker/repositories"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

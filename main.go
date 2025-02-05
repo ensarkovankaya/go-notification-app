@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/ensarkovankaya/go-messagingapp/common"
-	"github.com/ensarkovankaya/go-messagingapp/handlers"
+	"github.com/ensarkovankaya/go-message-broker/common"
+	"github.com/ensarkovankaya/go-message-broker/handlers"
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 	"os"
