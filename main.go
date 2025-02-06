@@ -51,6 +51,7 @@ func main() {
 		MessageService: messageService,
 		Redis:          Redis,
 		WebhookClient:  webhookClient,
+		Context:        ctx,
 	}
 
 	// Handlers
