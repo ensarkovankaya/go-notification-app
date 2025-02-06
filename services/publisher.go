@@ -40,12 +40,14 @@ func (s *PublisherService) Watch() {
 }
 
 func (s *PublisherService) Activate() {
+	zap.L().Debug("Activating publisher service")
 	s.Lock.Lock()
 	defer s.Lock.Unlock()
 	s.Active = true
 }
 
 func (s *PublisherService) Deactivate() {
+	zap.L().Debug("Deactivating publisher service")
 	s.Lock.Lock()
 	defer s.Lock.Unlock()
 	s.Active = false
@@ -58,10 +60,11 @@ func (s *PublisherService) GetStatus() bool {
 }
 
 func (s *PublisherService) run(ctx context.Context) {
+	zap.L().Debug("Checking messages to process")
 	if !s.Active {
+		zap.L().Debug("Publisher service is not active")
 		return
 	}
-	zap.L().Debug("Checking messages to process")
 	result, err := s.MessageService.List(ctx, 2, 0, "id desc", func(db *gorm.DB) *gorm.DB {
 		return db.Where("status = ?", repositories.MessageStatusScheduled)
 	})
