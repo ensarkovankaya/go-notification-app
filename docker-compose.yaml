@@ -4,8 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        BUILDPLATFORM: ${BUILDPLATFORM}
-        TARGETARCH: ${TARGETARCH}
+        BUILDPLATFORM: ${BUILDPLATFORM:-linux/amd64}
+        TARGETARCH: ${TARGETARCH:-amd64}
     restart: always
     ports:
       - "9098:9098"
