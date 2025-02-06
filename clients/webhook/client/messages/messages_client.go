@@ -30,7 +30,7 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	SendMessage(params *SendMessageParams, opts ...ClientOption) (*SendMessageOK, *SendMessageAccepted, error)
+	SendMessage(params *SendMessageParams, opts ...ClientOption) (*SendMessageAccepted, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -38,7 +38,7 @@ type ClientService interface {
 /*
 SendMessage sends a message
 */
-func (a *Client) SendMessage(params *SendMessageParams, opts ...ClientOption) (*SendMessageOK, *SendMessageAccepted, error) {
+func (a *Client) SendMessage(params *SendMessageParams, opts ...ClientOption) (*SendMessageAccepted, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSendMessageParams()
@@ -61,16 +61,15 @@ func (a *Client) SendMessage(params *SendMessageParams, opts ...ClientOption) (*
 
 	result, err := a.transport.Submit(op)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	switch value := result.(type) {
-	case *SendMessageOK:
-		return value, nil, nil
-	case *SendMessageAccepted:
-		return nil, value, nil
+	success, ok := result.(*SendMessageAccepted)
+	if ok {
+		return success, nil
 	}
+	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for messages: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for sendMessage: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
