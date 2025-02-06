@@ -1,6 +1,6 @@
-# Notification Application
+# Example Notification Application
 
-Simple notification application that excepts sms messages, schedules and periodically sends them to the third-party SMS provider.
+Example notification application that excepts sms messages, schedules and periodically sends them to the third-party SMS provider.
 
 # Installation
 
