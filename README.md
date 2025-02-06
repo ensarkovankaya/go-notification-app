@@ -35,7 +35,7 @@ webhook.site in the `docs/webhook.yaml` file.
 Before running the application, get a new webhook URL from webhook.site (e.g.,
 `https://webhook.site/c6e22413-17a9-43f3-ad66-b83cb8be515e`).
 
-In this example, set the unique ID (`c6e22413-17a9-43f3-ad66-b83cb8be515e`) as the `WEBHOOK_ID` environment variable in the `.env`
+In this example, set the unique ID (`c6e22413-17a9-43f3-ad66-b83cb8be515e` in this example) as the `WEBHOOK_ID` environment variable in the `.env`
 file.
 
 4. Build the application:
