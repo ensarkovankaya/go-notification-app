@@ -18,7 +18,7 @@ func (s *MessageService) Create(ctx context.Context, recipient string, content s
 	message := &repositories.Message{
 		Recipient: recipient,
 		Content:   content,
-		Status:    repositories.StatusScheduled,
+		Status:    repositories.MessageStatusScheduled,
 	}
 
 	if err := s.DB.WithContext(ctx).Create(message).Error; err != nil {
@@ -57,7 +57,7 @@ func (s *MessageService) List(ctx context.Context, limit, offset int64, order st
 func (s *MessageService) MarkAsSend(ctx context.Context, id uint, messageID string) error {
 	zap.L().Info("Marking message as sent", zap.Uint("id", id), zap.String("message_id", messageID))
 	if err := s.DB.WithContext(ctx).Model(&repositories.Message{}).Where("id = ?", id).UpdateColumns(map[string]any{
-		"status":     repositories.StatusSuccess,
+		"status":     repositories.MessageStatusSuccess,
 		"message_id": messageID,
 		"send_time":  s.DB.NowFunc(),
 		"updated_at": s.DB.NowFunc(),
@@ -72,7 +72,7 @@ func (s *MessageService) MarkAsSend(ctx context.Context, id uint, messageID stri
 func (s *MessageService) MarkAsFailed(ctx context.Context, id uint) error {
 	zap.L().Info("Marking message as failed", zap.Uint("id", id))
 	if err := s.DB.WithContext(ctx).Model(&repositories.Message{}).Where("id = ?", id).UpdateColumns(map[string]any{
-		"status":     repositories.StatusFailed,
+		"status":     repositories.MessageStatusFailed,
 		"updated_at": s.DB.NowFunc(),
 	}).Error; err != nil {
 		zap.L().Error("Failed to mark message as failed", zap.Error(err))

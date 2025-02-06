@@ -59,7 +59,7 @@ func (s *PublisherService) run(ctx context.Context) {
 	}
 	zap.L().Debug("Checking messages to process")
 	result, err := s.MessageService.List(ctx, 2, 0, "id desc", func(db *gorm.DB) *gorm.DB {
-		return db.Where("status = ?", repositories.StatusScheduled)
+		return db.Where("status = ?", repositories.MessageStatusScheduled)
 	})
 	if err != nil {
 		zap.L().Error("Failed to fetch messages", zap.Error(err))

@@ -5,9 +5,9 @@ import "fmt"
 type MessageStatus string
 
 var (
-	StatusScheduled MessageStatus = "SCHEDULED"
-	StatusSuccess   MessageStatus = "SUCCESS"
-	StatusFailed    MessageStatus = "FAILED"
+	MessageStatusScheduled MessageStatus = "SCHEDULED"
+	MessageStatusSuccess   MessageStatus = "SUCCESS"
+	MessageStatusFailed    MessageStatus = "FAILED"
 )
 
 // Scan implements the sql.Scanner interface for enum values in gorm
