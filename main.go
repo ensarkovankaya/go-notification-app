@@ -10,6 +10,7 @@ import (
 	"go.uber.org/zap"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 )
 
@@ -24,6 +25,7 @@ func main() {
 	defer closeDB()
 	defer closeRedis()
 	defer func() { _ = zap.L().Sync() }()
+	ctx := context.Background() // application context
 
 	// Initialize HTTP Server
 	app := fiber.New(fiber.Config{
@@ -41,6 +43,9 @@ func main() {
 		MessageService: messageService,
 		Duration:       Cnf.CronTTL,
 		Redis:          Redis,
+		Context:        ctx,
+		Lock:           &sync.Mutex{},
+		Active:         true,
 	}
 	subscriberService := &services.SubscriberService{
 		MessageService: messageService,
@@ -56,6 +61,9 @@ func main() {
 	messageHandler := handlers.MessageHandler{MessageService: messageService}
 	messageHandler.Setup(rootRouter)
 
+	cronHandler := handlers.CronHandler{PublisherService: publisherService}
+	cronHandler.Setup(rootRouter)
+
 	// Start http server
 	go func() {
 		address := fmt.Sprintf(":%s", Cnf.Port)
@@ -65,24 +73,31 @@ func main() {
 		}
 	}()
 
-	ctx := context.Background()
-
-	// Start Cron Job
-	go func() { publisherService.Start(ctx) }()
-
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+	// Start Publisher cron job
+	go func() {
+		defer wg.Done()
+		publisherService.Watch()
+	}()
 	// Start Subscriber
-	go func() { subscriberService.Start(ctx) }()
+	go func() {
+		defer wg.Done()
+		subscriberService.Watch()
+	}()
 
 	// Graceful shutdown
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-	<-c
-	ctx.Done() // Stop publisher and subscriber
+	<-c // listens for interrupt signal
 
-	// Close http application
+	// Stop accepting requests and wait for all requests to finish
 	if err := app.Shutdown(); err != nil {
 		zap.L().Error("Server shutdown failed", zap.Error(err))
 	} else {
 		zap.L().Info("Server shutdown succeeded")
 	}
+
+	ctx.Done() // Tell publisher and subscriber to stop running
+	wg.Wait()  // wait publisher and subscriber to stop
 }

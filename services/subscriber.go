@@ -13,21 +13,22 @@ type SubscriberService struct {
 	MessageService *MessageService
 	Redis          *redis.Client
 	WebhookClient  *clients.WebhookClient
+	Context        context.Context
 }
 
-func (s *SubscriberService) Start(ctx context.Context) {
-	subscriber := s.Redis.Subscribe(ctx, "messages")
+func (s *SubscriberService) Watch() {
+	subscriber := s.Redis.Subscribe(s.Context, "messages")
 	for {
 		select {
-		case <-ctx.Done():
+		case <-s.Context.Done():
 			return
 		default:
-			msg, err := subscriber.ReceiveMessage(ctx)
+			msg, err := subscriber.ReceiveMessage(s.Context)
 			if err != nil {
 				zap.L().Error("Failed to receive message", zap.Error(err))
 				continue
 			}
-			s.run(ctx, msg.Payload)
+			s.run(s.Context, msg.Payload)
 		}
 	}
 }

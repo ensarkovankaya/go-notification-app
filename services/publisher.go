@@ -7,6 +7,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"sync"
 	"time"
 )
 
@@ -14,25 +15,48 @@ type PublisherService struct {
 	MessageService *MessageService
 	Duration       time.Duration
 	Redis          *redis.Client
+	Timer          *time.Timer
+	Lock           sync.Locker
+	Context        context.Context
+	Active         bool
 }
 
-func (s *PublisherService) Start(ctx context.Context) {
-	s.run(ctx)
-	timer := time.NewTimer(s.Duration)
+func (s *PublisherService) Watch() {
+	s.Timer = time.NewTimer(s.Duration)
+	s.run(s.Context)
 	for {
 		select {
-		case <-ctx.Done():
+		case <-s.Context.Done(): // application closed
 			zap.L().Info("Publisher service stopped")
-			timer.Stop()
-			return
-		case <-timer.C:
-			s.run(ctx)
-			timer.Reset(s.Duration)
+		case <-s.Timer.C: // timer expired
+			s.run(s.Context)
+			s.Timer.Reset(s.Duration)
 		}
 	}
 }
 
+func (s *PublisherService) Activate() {
+	s.Lock.Lock()
+	defer s.Lock.Unlock()
+	s.Active = true
+}
+
+func (s *PublisherService) Deactivate() {
+	s.Lock.Lock()
+	defer s.Lock.Unlock()
+	s.Active = false
+}
+
+func (s *PublisherService) GetStatus() bool {
+	s.Lock.Lock()
+	defer s.Lock.Unlock()
+	return s.Active
+}
+
 func (s *PublisherService) run(ctx context.Context) {
+	if !s.Active {
+		return
+	}
 	zap.L().Debug("Checking messages to process")
 	result, err := s.MessageService.List(ctx, 2, 0, "id desc", func(db *gorm.DB) *gorm.DB {
 		return db.Where("status = ?", repositories.StatusScheduled)
