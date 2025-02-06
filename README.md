@@ -1,6 +1,6 @@
 # Notification Application
 
-Simple notification application that handles real-time notifications and alerts for various applications.
+Simple notification application that excepts sms messages, schedules and periodically sends them to the third-party SMS provider.
 
 # Installation
 
@@ -21,15 +21,15 @@ git clone https://github.com/ensarkovankaya/go-notification-app.git
 cd go-notification-app
 ```
 
-2. Copy the `.example-env` file to `.env` and set the environment variables:
+2. Copy the `.example-env` file to `.env` and modify the environment variables if needed:
 
 ```bash
 cp .example-env .env
 ```
 
-3. Get a new webhook URL from webhook.site:
+3. Retrieve a webhook URL from webhook.site:
 
-To simulate third-party SMS provider, the application uses webhook.site as a provider. You can find the documentation of
+To simulate third-party SMS provider, the application uses webhook.site as a mock provider. You can find the documentation of
 webhook.site in the `docs/webhook.yaml` file.
 
 Before running the application, get a new webhook URL from webhook.site (e.g.,
@@ -61,7 +61,7 @@ docker-compose build --build-arg BUILDPLATFORM=linux/arm64 --build-arg TARGETARC
 docker-compose up -d
 ```
 
-The application will be available at `http://localhost:9098`
+The application will be available at `http://localhost:9098/api`
 
 ## Environment Variables
 
@@ -88,12 +88,124 @@ The application will be available at `http://localhost:9098`
 | LOG_LEVEL  | ERROR         | Set application log level (can be one of: DEBUG, INFO, ERROR, WARNING) |
 | CRON_TTL   | 2m            | Cron job period                                                  |
 
-Configuration can be done through environment variables or the config file. See the `.example-env` file for available
-options.
+Configuration can be done through environment variables. See the `.example-env` file for available options.
 
-## API Documentation
+## Documentations
 
 API documentation is available at `docs/api.yaml` file.
+Webhook client documentation is available at `docs/webhook.yaml` file.
+
+### Example Requests
+
+#### List messages
+
+Request:
+```bash
+curl --location 'http://localhost:9098/api/messages' \
+--header 'Accept: application/json'
+```
+
+Response:
+```json
+{
+    "limit": 100,
+    "offset": 0,
+    "total": 2,
+    "data": [
+        {
+            "id": 3,
+            "recipient": "+905551234123",
+            "status": "SUCCESS",
+            "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "messageID": "f423deb8-9dd2-4176-8c4d-b81fda4d0e42",
+            "sentTime": "2025-02-06T18:54:06.204+03:00",
+            "createdAt": "2025-02-06T18:54:03.244+03:00",
+            "updatedAt": "2025-02-06T18:54:06.204+03:00"
+        },
+        {
+            "id": 2,
+            "recipient": "+905551234123",
+            "content": "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
+            "status": "FAILED",
+            "messageID": null,
+            "sentTime": "2025-02-06T18:53:46.231+03:00",
+            "createdAt": "2025-02-06T18:53:36.217+03:00",
+            "updatedAt": "2025-02-06T18:53:46.231+03:00"
+        },
+        {
+            "id": 1,
+            "content": "Itaque earum rerum hic tenetur a sapiente delectus",
+            "recipient": "+905551234567",
+            "messageID": null,
+            "sentTime": null,
+            "status": "SCHEDULED",
+            "createdAt": "2025-02-06T18:51:56.084+03:00",
+            "updatedAt": "2025-02-06T18:52:06.268+03:00"
+        }
+    ]
+}
+```
+
+#### Send message
+
+Request:
+```bash
+curl --location 'http://localhost:9098/api/messages' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--data '{
+  "recipient": "+905551234567",
+  "content": "Hello world"
+}'
+```
+
+Response:
+```json
+{
+    "id": 1,
+    "recipient": "+905551234567",
+    "content": "Hello world",
+    "messageID": null,
+    "sentTime": null,
+    "status": "SCHEDULED",
+    "createdAt": "2025-02-06T18:51:56.084+03:00",
+    "updatedAt": "2025-02-06T18:51:56.084+03:00"
+}
+```
+
+#### Get Cron Job Status
+
+Request:
+```bash
+curl --location 'http://localhost:9098/api/cron/' \
+--header 'Accept: application/json'
+```
+
+Response:
+```json
+{
+    "active": true
+}
+```
+
+#### Activate / Deactivate Cron Job
+
+Request:
+```bash
+curl --location 'http://localhost:9098/api/cron/' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--data '{
+  "active": true
+}'
+```
+
+Response:
+```json
+{
+    "active": true
+}
+```
 
 # Architecture
 
@@ -120,7 +232,7 @@ The application works in three parts:
 
 API documentation is available at `docs/api.yaml` file. Webhook service client documentation in this example is under `docs/webhook.yaml` file.
 
-After `api.yaml` updated to reflect changes run the following command to generate models and clients:
+After documentation updated to reflect changes run the following command to generate models and clients:
 
 ```bash
 make models
