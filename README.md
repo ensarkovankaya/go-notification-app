@@ -238,3 +238,9 @@ After documentation updated to reflect changes run the following command to gene
 make models
 make client_webhook
 ```
+
+# Running Tests
+
+```bash
+make test
+```
