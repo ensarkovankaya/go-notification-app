@@ -2,6 +2,8 @@
 
 Example notification application that excepts sms messages, schedules and periodically sends them to the third-party SMS provider.
 
+This application is built with Go, PostgreSQL, Redis, and Docker. Examplify use of code generation to generate models and clients from the API documentation. Features a pub/sub pattern to send messages to the third-party SMS provider. Utilizes cron jobs to schedule periodic tasks. Includes unit tests for business logic.
+
 # Installation
 
 ## Prerequisites
