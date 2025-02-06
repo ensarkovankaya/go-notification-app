@@ -38,6 +38,10 @@ Before running the application, get a new webhook URL from webhook.site (e.g.,
 In this example, set the unique ID (`c6e22413-17a9-43f3-ad66-b83cb8be515e` in this example) as the `WEBHOOK_ID` environment variable in the `.env`
 file.
 
+webhook.site response should be configured as below:
+- Set response status code to `202`
+- Set response content to `{"messageId": "random-message-id", "message": "Accepted"}`
+
 4. Build the application:
 
 Choose the appropriate build platform values for your system from the table below:
