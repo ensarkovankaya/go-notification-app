@@ -11,10 +11,14 @@ import (
 	"time"
 )
 
+type Publisher interface {
+	Publish(ctx context.Context, channel string, message interface{}) *redis.IntCmd
+}
+
 type PublisherService struct {
 	MessageService *MessageService
 	Duration       time.Duration
-	Redis          *redis.Client
+	Redis          Publisher
 	Timer          *time.Timer
 	Lock           sync.Locker
 	Context        context.Context

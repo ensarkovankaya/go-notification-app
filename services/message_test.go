@@ -12,7 +12,7 @@ import (
 )
 
 type testDB struct {
-	db *gorm.DB
+	DB *gorm.DB
 }
 
 func setupTestDB(t *testing.T) *testDB {
@@ -23,7 +23,7 @@ func setupTestDB(t *testing.T) *testDB {
 	err = db.AutoMigrate(&repositories.Message{})
 	assert.NoError(t, err)
 
-	return &testDB{db: db}
+	return &testDB{DB: db}
 }
 
 func (tdb *testDB) insertMessages(t *testing.T) []*repositories.Message {
@@ -48,7 +48,7 @@ func (tdb *testDB) insertMessages(t *testing.T) []*repositories.Message {
 		},
 	}
 
-	result := tdb.db.Create(&messages)
+	result := tdb.DB.Create(&messages)
 	assert.NoError(t, result.Error)
 	return messages
 }
@@ -58,7 +58,7 @@ func TestMessageService_List(t *testing.T) {
 		tdb := setupTestDB(t)
 		seededMessages := tdb.insertMessages(t)
 
-		service := MessageService{DB: tdb.db}
+		service := MessageService{DB: tdb.DB}
 		result, err := service.List(context.Background(), 100, 0, "id desc")
 
 		assert.NoError(t, err)
@@ -70,7 +70,7 @@ func TestMessageService_List(t *testing.T) {
 		tdb := setupTestDB(t)
 		tdb.insertMessages(t)
 
-		service := MessageService{DB: tdb.db}
+		service := MessageService{DB: tdb.DB}
 		filter := func(db *gorm.DB) *gorm.DB {
 			return db.Where("status = ?", repositories.MessageStatusScheduled)
 		}
@@ -87,7 +87,7 @@ func TestMessageService_List(t *testing.T) {
 		tdb := setupTestDB(t)
 		tdb.insertMessages(t)
 
-		service := MessageService{DB: tdb.db}
+		service := MessageService{DB: tdb.DB}
 		filter := func(db *gorm.DB) *gorm.DB {
 			return db.Where("recipient = ?", "+1234567890")
 		}
@@ -106,7 +106,7 @@ func TestMessageService_List(t *testing.T) {
 		tdb := setupTestDB(t)
 		tdb.insertMessages(t)
 
-		service := MessageService{DB: tdb.db}
+		service := MessageService{DB: tdb.DB}
 		result, err := service.List(context.Background(), 1, 1, "id desc")
 
 		assert.NoError(t, err)
@@ -118,7 +118,7 @@ func TestMessageService_List(t *testing.T) {
 		tdb := setupTestDB(t)
 		tdb.insertMessages(t)
 
-		service := MessageService{DB: tdb.db}
+		service := MessageService{DB: tdb.DB}
 		result, err := service.List(context.Background(), 100, 0, "id asc")
 
 		assert.NoError(t, err)
@@ -133,7 +133,7 @@ func TestMessageService_List(t *testing.T) {
 func TestMessageService_Create(t *testing.T) {
 	t.Run("test create message", func(t *testing.T) {
 		tdb := setupTestDB(t)
-		service := MessageService{DB: tdb.db}
+		service := MessageService{DB: tdb.DB}
 
 		message, err := service.Create(context.Background(), "+1234567890", "Test content")
 

@@ -50,7 +50,7 @@ func main() {
 	subscriberService := &services.SubscriberService{
 		MessageService: messageService,
 		Redis:          Redis,
-		WebhookClient:  webhookClient,
+		SmsClient:      webhookClient,
 		Context:        ctx,
 	}
 

@@ -9,10 +9,18 @@ import (
 	"go.uber.org/zap"
 )
 
+type Subscriber interface {
+	Subscribe(ctx context.Context, channels ...string) *redis.PubSub
+}
+
+type SMSClient interface {
+	Send(ctx context.Context, payload clients.Payload) (string, error)
+}
+
 type SubscriberService struct {
 	MessageService *MessageService
-	Redis          *redis.Client
-	WebhookClient  *clients.WebhookClient
+	Redis          Subscriber
+	SmsClient      SMSClient
 	Context        context.Context
 }
 
@@ -44,7 +52,7 @@ func (s *SubscriberService) run(ctx context.Context, payload string) {
 	}
 
 	// Send to client
-	messageID, err := s.WebhookClient.Send(ctx, clients.Payload{
+	messageID, err := s.SmsClient.Send(ctx, clients.Payload{
 		To:      message.Recipient,
 		Content: message.Content,
 	})
