@@ -23,8 +23,8 @@ type SendMessageReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *SendMessageReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-	case 200:
-		result := NewSendMessageOK()
+	case 202:
+		result := NewSendMessageAccepted()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -34,63 +34,63 @@ func (o *SendMessageReader) ReadResponse(response runtime.ClientResponse, consum
 	}
 }
 
-// NewSendMessageOK creates a SendMessageOK with default headers values
-func NewSendMessageOK() *SendMessageOK {
-	return &SendMessageOK{}
+// NewSendMessageAccepted creates a SendMessageAccepted with default headers values
+func NewSendMessageAccepted() *SendMessageAccepted {
+	return &SendMessageAccepted{}
 }
 
 /*
-SendMessageOK describes a response with status code 200, with default header values.
+SendMessageAccepted describes a response with status code 202, with default header values.
 
 Message received
 */
-type SendMessageOK struct {
+type SendMessageAccepted struct {
 	Payload *models.MessageResult
 }
 
-// IsSuccess returns true when this send message o k response has a 2xx status code
-func (o *SendMessageOK) IsSuccess() bool {
+// IsSuccess returns true when this send message accepted response has a 2xx status code
+func (o *SendMessageAccepted) IsSuccess() bool {
 	return true
 }
 
-// IsRedirect returns true when this send message o k response has a 3xx status code
-func (o *SendMessageOK) IsRedirect() bool {
+// IsRedirect returns true when this send message accepted response has a 3xx status code
+func (o *SendMessageAccepted) IsRedirect() bool {
 	return false
 }
 
-// IsClientError returns true when this send message o k response has a 4xx status code
-func (o *SendMessageOK) IsClientError() bool {
+// IsClientError returns true when this send message accepted response has a 4xx status code
+func (o *SendMessageAccepted) IsClientError() bool {
 	return false
 }
 
-// IsServerError returns true when this send message o k response has a 5xx status code
-func (o *SendMessageOK) IsServerError() bool {
+// IsServerError returns true when this send message accepted response has a 5xx status code
+func (o *SendMessageAccepted) IsServerError() bool {
 	return false
 }
 
-// IsCode returns true when this send message o k response a status code equal to that given
-func (o *SendMessageOK) IsCode(code int) bool {
-	return code == 200
+// IsCode returns true when this send message accepted response a status code equal to that given
+func (o *SendMessageAccepted) IsCode(code int) bool {
+	return code == 202
 }
 
-// Code gets the status code for the send message o k response
-func (o *SendMessageOK) Code() int {
-	return 200
+// Code gets the status code for the send message accepted response
+func (o *SendMessageAccepted) Code() int {
+	return 202
 }
 
-func (o *SendMessageOK) Error() string {
-	return fmt.Sprintf("[POST /{id}/][%d] sendMessageOK  %+v", 200, o.Payload)
+func (o *SendMessageAccepted) Error() string {
+	return fmt.Sprintf("[POST /{id}/][%d] sendMessageAccepted  %+v", 202, o.Payload)
 }
 
-func (o *SendMessageOK) String() string {
-	return fmt.Sprintf("[POST /{id}/][%d] sendMessageOK  %+v", 200, o.Payload)
+func (o *SendMessageAccepted) String() string {
+	return fmt.Sprintf("[POST /{id}/][%d] sendMessageAccepted  %+v", 202, o.Payload)
 }
 
-func (o *SendMessageOK) GetPayload() *models.MessageResult {
+func (o *SendMessageAccepted) GetPayload() *models.MessageResult {
 	return o.Payload
 }
 
-func (o *SendMessageOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *SendMessageAccepted) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.MessageResult)
 

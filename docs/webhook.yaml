@@ -30,7 +30,7 @@ paths:
           schema:
             $ref: "#/definitions/MessageRequest"
       responses:
-        200:
+        202:
           $ref: "#/responses/MessageResponse"
 
 responses:

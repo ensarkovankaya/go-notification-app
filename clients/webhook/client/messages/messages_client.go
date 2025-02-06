@@ -30,7 +30,7 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	SendMessage(params *SendMessageParams, opts ...ClientOption) (*SendMessageOK, error)
+	SendMessage(params *SendMessageParams, opts ...ClientOption) (*SendMessageAccepted, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -38,7 +38,7 @@ type ClientService interface {
 /*
 SendMessage sends a message
 */
-func (a *Client) SendMessage(params *SendMessageParams, opts ...ClientOption) (*SendMessageOK, error) {
+func (a *Client) SendMessage(params *SendMessageParams, opts ...ClientOption) (*SendMessageAccepted, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSendMessageParams()
@@ -63,7 +63,7 @@ func (a *Client) SendMessage(params *SendMessageParams, opts ...ClientOption) (*
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*SendMessageOK)
+	success, ok := result.(*SendMessageAccepted)
 	if ok {
 		return success, nil
 	}
